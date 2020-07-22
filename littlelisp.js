@@ -1,16 +1,12 @@
 ;(function(exports) {
   var library = {
-    first: function(x) {
-      return x[0];
+    import: function(x) {
+      let lib = require('./' + x);
+      library = {...library, ...lib};
     },
 
-    rest: function(x) {
-      return x.slice(1);
-    },
-
-    print: function(x) {
-      console.log(x);
-      return x;
+    plib: function() {
+      console.log(library);
     }
   };
 
@@ -19,9 +15,14 @@
     this.parent = parent;
 
     this.get = function(identifier) {
-      if (identifier in this.scope) {
-        return this.scope[identifier];
-      } else if (this.parent !== undefined) {
+      let s = identifier.split('.')
+                        .reduce((a, v) => v in a ? a[v] : undefined,
+                                this.scope);
+      if (s !== undefined) {
+        return s;
+      }
+
+      if (this.parent !== undefined) {
         return this.parent.get(identifier);
       }
     };
