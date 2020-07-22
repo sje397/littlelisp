@@ -1,14 +1,5 @@
 ;(function(exports) {
-  var library = {
-    import: function(x) {
-      let lib = require('./' + x);
-      library = {...library, ...lib};
-    },
-
-    plib: function() {
-      console.log(library);
-    }
-  };
+  var library = require("./core");
 
   var Context = function(scope, parent) {
     this.scope = scope;
@@ -54,6 +45,11 @@
       return interpret(input[1], context) ?
         interpret(input[2], context) :
         interpret(input[3], context);
+    },
+
+    import: function(input, context) {
+      var importContext = new Context(require(input[1].value), context);
+      return interpret(input[2], importContext);
     }
   };
 

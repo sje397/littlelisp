@@ -105,10 +105,7 @@ describe('littleLisp', function() {
       });
     });
 
-    // we use core imports below
-    t.interpret(t.parse('(import "core")'));
-
-    describe('invocation', function() {
+    describe('invocation_core', function() {
       it('should run print on an int', function() {
         expect(t.interpret(t.parse("(print 1)"))).toEqual(undefined);
       });
@@ -119,6 +116,24 @@ describe('littleLisp', function() {
 
       it('should return rest of list', function() {
         expect(t.interpret(t.parse("(rest (1 2 3))"))).toEqual([2, 3]);
+      });
+
+      it('should create a list', function() {
+        expect(t.interpret(t.parse("(list 1 2 3)"))).toEqual([1, 2, 3]);
+      });
+    });
+
+    describe('invocation_builtin', function() {
+      it('should not import missing libraries', function() {
+        expect(() => t.interpret(t.parse('(import "./no_such_lib" ())'))).toThrow();
+      });
+
+      it('should import math functions', function() {
+        expect(t.interpret(t.parse('(import "./math" ())'))).toEqual([]);
+      });
+
+      it('should import evaluate math functions', function() {
+        expect(t.interpret(t.parse('(import "./math" (math.add 3 4))'))).toEqual(7);
       });
     });
 
